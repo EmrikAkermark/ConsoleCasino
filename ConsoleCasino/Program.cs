@@ -26,8 +26,26 @@ namespace ConsoleCasino
 			string name = Console.ReadLine();
 
 			Console.Write("And your starting funds: ");
-			int startingMoney;
-			int.TryParse(Console.ReadLine(), out startingMoney);
+			bool insertingMoney = true;
+			int startingMoney = 0;
+
+			while(insertingMoney)
+			{
+				int.TryParse(Console.ReadLine(), out startingMoney);
+				if(startingMoney < 0)
+				{
+					Console.WriteLine("How does that even work?");
+				}
+				else if(startingMoney == 0)
+				{
+					Console.WriteLine("Very funny, give us an actual number");
+				}
+				else
+				{
+					insertingMoney = false;
+				}
+
+			}
 
 			PlayerProfile pProfile = new PlayerProfile(startingMoney, name);
 
@@ -50,6 +68,7 @@ namespace ConsoleCasino
 						break;
 					case 3:
 						Console.WriteLine("Come back soon! Press any key to leave");
+						Console.Read();
 						wantsToPlay = false;
 						break;
 					default:
@@ -64,6 +83,7 @@ namespace ConsoleCasino
 			if(!hasMoney)
 			{
 				Console.WriteLine("Get out of here " + pProfile.Name + ", and don't come back until you have some ca$h!");
+				Console.Read();
 			}
 
 
@@ -77,6 +97,7 @@ namespace ConsoleCasino
 		{
 
 			Console.WriteLine("Hello " + pProfile.Name + " and welcome to BlackJack!");
+			Console.WriteLine("Dealer stands on 17");
 
 			bool isPlaying = true;
 
@@ -110,10 +131,10 @@ namespace ConsoleCasino
 
 				int playerHandValue = CheckHandValue(playerHand);
 
-				if(playerHandValue == 21)
+				Console.WriteLine("Your hand is " + GetHandValueInString(playerHand));
+				Console.WriteLine("Your value is " + playerHandValue);
+				if (playerHandValue == 21)
 				{
-					Console.WriteLine("Your hand is " + GetHandValueInString(playerHand));
-					Console.WriteLine("Your value is " + CheckHandValue(playerHand));
 					Console.WriteLine("You have BlackJack!");
 					playerBlackJack = true;
 				}
@@ -122,8 +143,7 @@ namespace ConsoleCasino
 					
 					while (playerSelecting)
 					{
-						Console.WriteLine("Your hand is " + GetHandValueInString(playerHand));
-						Console.WriteLine("Your value is " + playerHandValue);
+						
 						Console.WriteLine("Do you (1)Stay, (2)Hit, (3)Double Down");
 						int selection = 0;
 							
@@ -152,14 +172,14 @@ namespace ConsoleCasino
 
 								CardsAndDice.AddCardsToHand(ref deck, ref playerHand, 1);
 								playerHandValue = CheckHandValue(playerHand);
-								Console.WriteLine("Your hand is " + GetHandValueInString(playerHand));
-								Console.WriteLine("Your value is " + playerHandValue);
 								playerSelecting = false;
 								break;
 							default:
 								Console.WriteLine("That's not right");
 								break;
 						}
+						Console.WriteLine("Your hand is " + GetHandValueInString(playerHand));
+						Console.WriteLine("Your value is " + playerHandValue);
 						if (CheckHandValue(playerHand) > 21)
 						{
 							playerBust = true;
@@ -302,7 +322,11 @@ namespace ConsoleCasino
 			for (int i = 0; i < hand.Count; i++)
 			{
 				handInString += CardsAndDice.GetCardValueInString(hand[i]);
-				if (i != hand.Count - 1)
+				if( i < hand.Count - 2)
+				{
+					handInString += ", the ";
+				}
+				else if (i != hand.Count - 1)
 				{
 					handInString += " and the ";
 				}
