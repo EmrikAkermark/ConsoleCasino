@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+
 namespace ConsoleCasino
 {
 	public class EvenAndOdd
 	{
-		static public Program.PlayerProfile Run(Program.PlayerProfile pProfile)
+		static public Utilities.PlayerProfile Run(Utilities.PlayerProfile pProfile)
 		{
 			Console.WriteLine("Hello " + pProfile.Name + " and welcome to Even and Odd, or Chō-han!");
 
