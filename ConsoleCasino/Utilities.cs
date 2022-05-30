@@ -1,6 +1,8 @@
 ﻿using System;
 namespace ConsoleCasino
 {
+	//Utilities are to contain methods and structs that are not directly related
+	//to the game part of hazard games.
 	public class Utilities
 	{
 		public struct PlayerProfile
@@ -15,6 +17,10 @@ namespace ConsoleCasino
 
 		}
 
+
+		//Making sure the player inserts a legal amount of money
+		//(or makes a legal entry) takes up space, and will be used
+		//in every game. So in utilities it goes.
 		static public int BuyChips(int availableMoney)
 		{
 			bool insertingMoney = true;
@@ -46,6 +52,10 @@ namespace ConsoleCasino
 			return betMoney;
 		}
 
+		// Asking the player Yes/No is generic enough to use anywhere, and
+		// making sure that the player gives a valid response requires some extra lines.
+		// This is to make it as easy to not only read when implemented, but also to implement in the first place.
+		// I want to avoid not using useful code because inserting it is tedious.
 		static public bool GetConfirmation()
 		{
 			bool waitingForAnswer = true;

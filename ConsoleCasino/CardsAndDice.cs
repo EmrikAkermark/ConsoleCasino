@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace ConsoleCasino
 {
+	// Cards and dice are supposed to handle any generic methods and structs involving cards and dice
 	public class CardsAndDice
 	{
 		public struct Card
@@ -16,7 +17,13 @@ namespace ConsoleCasino
 			}
 		}
 
-		public static string GetCardValueInString(Card card)
+
+		// The next two methods aren't complicated, just big.
+		// Turning them into methods is not just for cleaner code when reading,
+		// but making sure that using their functionality becomes as easy as possible
+		// when writing. 
+
+		public static string GetCardInString(Card card)
 		{
 
 			string cardString = "";
@@ -63,6 +70,26 @@ namespace ConsoleCasino
 			return cardString;
 		}
 
+		public static string GetHandInString(List<Card> hand)
+		{
+			string handInString = "the ";
+			for (int i = 0; i < hand.Count; i++)
+			{
+				handInString += GetCardInString(hand[i]);
+				if (i < hand.Count - 2)
+				{
+					handInString += ", the ";
+				}
+				else if (i != hand.Count - 1)
+				{
+					handInString += " and the ";
+				}
+			}
+			return handInString;
+		}
+
+		// Simple deck making method with shuffling and customizable size
+		// 
 		public static List<Card> CreateDeckOfCards(int noOfDecks = 1, bool shuffled = true)
 		{
 			if (noOfDecks < 1)
@@ -72,10 +99,10 @@ namespace ConsoleCasino
 			List<Card> deck = new List<Card>();
 			int currentSuit;
 			int currentValue;
-			Card card = new Card();
-			for (int i = 0; i < 4; i++)
+			Card card;
+			for (int i = 0; i < 4 * noOfDecks; i++)
 			{
-				currentSuit = i;
+				currentSuit = i % 4;
 				for (int j = 1; j < 14; j++)
 				{
 					currentValue = j;
@@ -83,7 +110,17 @@ namespace ConsoleCasino
 					deck.Add(card);
 				}
 			}
-
+			// The shuffle is a bit funky.
+			// We have 2 new lists, the shuffled deck of cards,
+			// and the list of indexes of the unshuffled deck.
+			//
+			// We will pick a random number from the list of indexes,
+			// then use that index to pick a card from the unshuffled deck
+			// and copy it to the shuffled deck.
+			// We then remove that index from the index list.
+			//
+			// This makes sure every card will be selected from the unshuffled
+			// deck, but only once.
 			if (shuffled)
 			{
 				List<Card> shuffledDeck = new List<Card>();
@@ -93,13 +130,16 @@ namespace ConsoleCasino
 					indexes.Add(i);
 				}
 				Random random = new Random();
+
+
 				for (int i = deck.Count - 1; i > 0; i--)
 				{
-					int random2 = random.Next() % i;
-					int randomIndex = indexes[random2];
-					indexes.RemoveAt(random2);
-					shuffledDeck.Add(deck[randomIndex]);
+					int randomIndexForIndexList = random.Next() % i;
+					int randomIndexForDeck = indexes[randomIndexForIndexList];
+					indexes.RemoveAt(randomIndexForIndexList);
+					shuffledDeck.Add(deck[randomIndexForDeck]);
 				}
+				// Adding the last card manually since "%" doesn't support the value 0
 				shuffledDeck.Add(deck[indexes[0]]);
 
 				return shuffledDeck;
@@ -109,15 +149,27 @@ namespace ConsoleCasino
 			return deck;
 		}
 
-		public static void AddCardsToHand(ref List<Card> deck, ref List<Card> hand, int numberOfCards)
+
+		// Moves a set number of cards from the deck to a hand.
+		// Uses refs to keep it as simple as possible to implement.
+		public static bool AddCardsToHand(ref List<Card> deck, ref List<Card> hand, int numberOfCards)
 		{
+			if(numberOfCards > deck.Count)
+			{
+				Console.WriteLine("Attempted to add more cards than exists in deck");
+
+				return false;
+			}
+
 			while (numberOfCards > 0)
 			{
 				hand.Add(deck[0]);
 				deck.RemoveAt(0);
 				numberOfCards--;
 			}
+			return true;
 		}
+
 
 		public static List<int> DiceThrow(int numberOfDice = 1)
 		{

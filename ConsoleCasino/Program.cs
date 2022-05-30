@@ -16,6 +16,7 @@ namespace ConsoleCasino
 			bool insertingMoney = true;
 			int startingMoney = 0;
 
+			//A safeguard to ensure the player inserts actual money
 			while(insertingMoney)
 			{
 				int.TryParse(Console.ReadLine(), out startingMoney);
@@ -40,7 +41,7 @@ namespace ConsoleCasino
 			bool wantsToPlay = true;
 			while (hasMoney && wantsToPlay)
 			{
-				int selection = 0;
+				int selection;
 
 				Console.WriteLine("You can go to (1)BlackJack, (2)Odd or Even, and (3)Leave");
 
@@ -54,7 +55,7 @@ namespace ConsoleCasino
 						pProfile = EvenAndOdd.Run(pProfile);
 						break;
 					case 3:
-						Console.WriteLine("Come back soon! Press any key to leave");
+						Console.WriteLine("Come back soon!");
 						Console.Read();
 						wantsToPlay = false;
 						break;
